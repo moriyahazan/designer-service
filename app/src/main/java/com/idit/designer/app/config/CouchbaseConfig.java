@@ -114,7 +114,13 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
         }
     }
 
-   
+    @Override
+    public void configureRepositoryOperationsMapping(RepositoryOperationsMapping baseMapping) {
+        MappingCouchbaseConverter mappingCouchbaseConverter = new MappingCouchbaseConverter();
+        mappingCouchbaseConverter.setCustomConversions(customBucketsConversions());
+        CouchbaseTemplate projectTemplate = customCouchbaseTemplate(customCouchbaseClientFactory("project_manager"), mappingCouchbaseConverter);
+        baseMapping.mapEntity(Project.class, projectTemplate); //
+    }
 
     private CouchbaseCustomConversions customBucketsConversions() {
         return new CouchbaseCustomConversions(Arrays.asList(
