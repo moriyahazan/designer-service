@@ -1,0 +1,7 @@
+.git
+.idea
+.shelf
+*.iml
+**/target/
+couchbasedb
+.mvn

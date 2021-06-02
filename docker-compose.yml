@@ -1,0 +1,47 @@
+version: "3.8"
+volumes:
+  data:
+    name: designer-service-volume
+services:
+  couchbase:
+    build:
+      context: couchbasedb
+    ports:
+      - "8091-8094:8091-8094"
+      - "11210:11210"
+    volumes:
+      - data:/opt/couchbase/var/lib/couchbase/data
+#  activemq:
+#    image: activemq
+#    ports:
+#      - "8161:8161"
+#  minio-server:
+#      ports:
+#        - 9000:9000
+#      image:  minio/minio
+#      command: server /data
+#      volumes:
+#        - data:/data
+#  createbuckets:
+#      image: minio/minio
+#      depends_on:
+#        - minio-server
+#      entrypoint: >
+#        /bin/sh -c "
+#        /usr/bin/mc config host add myminio http://minio-server:9000 minioadmin minioadmin;
+#        /usr/bin/mc rm -r --force idit;
+#        /usr/bin/mc mb idit;
+#        /usr/bin/mc policy download idit;
+#        exit 0;
+#        "
+  app:
+    ports:
+      - "9001:9001"
+    depends_on:
+      - couchbase
+      #- activemq
+      #- minio-server
+    restart: on-failure:10
+    build:
+      context: .
+  
